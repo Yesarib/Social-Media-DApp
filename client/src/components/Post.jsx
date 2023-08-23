@@ -10,13 +10,14 @@ const Post = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { createPost } = useStateContext();
   const [content, setContent] = useState("")
+  const [imageUrl, setImageUrl] = useState("")
 
   const handleSubmit = async(e) => {
     e.preventDefault();
 
     try {
       setIsLoading(true);
-      await createPost({content, target: ethers.utils.parseUnits(content,18)});
+      await createPost({ content, imageUrl });
       setIsLoading(false);
       navigate('/')
     } catch (error) {
@@ -31,14 +32,24 @@ const Post = () => {
         <div className="mt-10 w-2/3 bg-gray-900  rounded-3xl justify-center items-center flex flex-col">
           <div className="flex mt-5">
             <div className="w-16 h-16 bg-slate-600 rounded-full"></div>
-            <input
-              className="w-96 h-16 ml-10  rounded-2xl bg-slate-600 divide-slate-10 pl-4 placeholder:italic placeholder:text-slate-400 "
-              type="text"
-              name="post"
-              id="post"
-              placeholder="Write What You Want..."
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <div className="flex flex-col">
+              <input
+                className="w-96 h-16 ml-10  rounded-2xl bg-slate-600 divide-slate-10 pl-4 placeholder:italic placeholder:text-slate-400 "
+                type="text"
+                name="post"
+                id="post"
+                placeholder="Write What You Want..."
+                onChange={(e) => setContent(e.target.value)}
+              />
+              <input 
+                type="imageUrl" 
+                name="imageUrl"
+                placeholder="Image Url"
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-96 h-16 ml-10 mt-5 rounded-2xl bg-slate-600 divide-slate-10 pl-4 placeholder:italic placeholder:text-slate-400 "
+              />
+            </div>
+            
           </div>
           <div className="mt-5 mb-5 flex justify-start items-start space-x-20">
             <div className="flex ">

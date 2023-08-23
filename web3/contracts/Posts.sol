@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
 contract PostsContract{
@@ -9,6 +9,7 @@ contract PostsContract{
         uint256 creationTime;
         uint256 likes;
         string[] comments;
+        string imageUrl;
     }
 
     Posts[] public posts;
@@ -17,9 +18,9 @@ contract PostsContract{
     mapping(address => uint256[]) public userPosts;
 
 
-    function newPost(string memory _content) public payable {
+    function newPost(string memory _content, string memory _imageUrl) public {
         uint256 postId = posts.length;
-        posts.push(Posts(postId, msg.sender, _content, block.timestamp, 0, new string[](0)));
+        posts.push(Posts(postId, msg.sender, _content, block.timestamp, 0, new string[](0), _imageUrl));
         userPosts[msg.sender].push(postId);
 
     }
@@ -54,5 +55,9 @@ contract PostsContract{
             post.likes,
             post.comments
         );
+    }
+
+    function getAllPosts() public view returns (Posts[] memory) {
+    return posts;
     }
 }

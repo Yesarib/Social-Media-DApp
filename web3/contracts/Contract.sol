@@ -17,8 +17,8 @@ contract Contract {
         userContract.newUser(_userName);
     }
 
-    function createPost(string memory _content) public payable {
-        socialMediaContract.newPost(_content);
+    function createPost(string memory _content, string memory _imageUrl) public payable {
+        socialMediaContract.newPost(_content, _imageUrl);
     }
 
     function likePost(uint256 _postId) public {
