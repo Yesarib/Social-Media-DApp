@@ -9,6 +9,7 @@ export const StateContextProvider = ({ children }) => {
     const { contract } = useContract("0x74F8cf1AEF14Bf71bE5A8ce32c094B53B46921dF")
     const { mutateAsync: createPost } = useContractWrite(contract, 'newPost')
     const { mutateAsync: likePost } = useContractWrite(contract, 'likePost')
+    const { mutateAsync: newComment } = useContractWrite(contract, 'addComment')
 
     const address = useAddress();
     const connect = useMetamask();
@@ -32,6 +33,7 @@ export const StateContextProvider = ({ children }) => {
         const posts = await contract.call('getAllPosts');
 
         const parsePosts = posts.map((post,i) => ({
+            pId:i,
             creator: post.creator,
             content: post.content,
             likes: post.likes,
@@ -45,20 +47,49 @@ export const StateContextProvider = ({ children }) => {
 
     }
 
-    // const publishLike = async(postId) => {
-    //     try {
-    //         const data = await likePost({
-    //             args:[
-    //                 postId.postId
-    //             ]
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    const publishLike = async(postId) => {
+        console.log(postId);
+        try {
+            const postIdBN = ethers.utils.hexValue(postId.id)
+            console.log(postIdBN);
+            const data = await likePost({
+                args:[
+                    postIdBN
+                ]
+            });
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const publishComment = async(postId, comment) => {
+        console.log(postId);
+        try {
+            const postIdBN = ethers.utils.hexValue(postId.pId)
+
+            const data = await newComment({
+                args:[
+                    postIdBN,
+                    postId.comment
+                ]
+            })
+            console.log(data);
+        } catch (error) {
+            console.log(error);   
+        }
+    }
 
     return (
-        <StateContext.Provider value={{address, contract, connect, createPost: publishPost, getPosts, }}>
+        <StateContext.Provider 
+            value={{
+                address, 
+                contract, 
+                connect, 
+                createPost: publishPost, 
+                getPosts, 
+                likePost:publishLike, 
+                newComment:publishComment, }}>
             {children}
         </StateContext.Provider>
     )
